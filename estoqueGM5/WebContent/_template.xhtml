@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head />
+<h:body>
+	<div id="cabecalho">
+		<h:panelGrid columns="3">
+			<h:graphicImage library="img" name="logo.png" title="GM5" />
+			<h:outputText value="GM5" />
+		</h:panelGrid>
+
+		<h:form rendered="#{usuarioLogado != null}">
+			<h:panelGrid columns="2">
+				<h:outputText value="Usuário: #{sessionScope['usuarioLogado'].email}" />
+				<h:commandLink value="Logout" action="#{loginBean.deslogar}"></h:commandLink>
+			</h:panelGrid>
+		</h:form>
+
+		<h1>
+			<ui:insert name="titulo"></ui:insert>
+		</h1>
+	</div>
+	<div id="conteudo">
+		<ui:insert name="conteudo">
+		</ui:insert>
+	</div>
+	<div id="rodape">
+		<br /> copyright 2019
+		<ui:insert name="texto">
+		</ui:insert>
+	</div>
+</h:body>
+</html>

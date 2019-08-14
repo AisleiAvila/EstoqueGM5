@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="titulo">
+            Estoque
+    </ui:define>
+	<ui:define name="conteudo">
+ 		<f:metadata>
+			<f:viewParam name="estoqueId" value="#{estoqueBean.estoque.id}" />
+			<f:viewAction action="#{estoqueBean.carregarEstoquePelaId}"
+				if="#{param.estoqueId != null}" />
+		</f:metadata>
+		<h:form>
+		
+			<fieldset>
+				<legend>Loja Selecionada</legend>
+			<h:outputText value="Nome: #{estoqueBean.lojaSelecionada.nome}" />
+			</fieldset>
+			
+			<br/>
+
+			<fieldset>
+				<legend>Dados do Estoque</legend>
+				<h:panelGrid columns="3">
+
+					<h:outputLabel value="Selecione item:" for="item" rendered="#{estoqueBean.estoque.id == null}"/>
+					<h:selectOneMenu value="#{estoqueBean.itemId}" id="item" rendered="#{estoqueBean.estoque.id == null}">
+						<f:selectItems value="#{estoqueBean.itens}" var="item"
+							itemLabel="#{item.nome}" itemValue="#{item.id}" ></f:selectItems>
+					</h:selectOneMenu>
+
+					<tr />
+					
+					<h:outputLabel value="Item:" for="itemEncontrado" rendered="#{estoqueBean.estoque.id != null}" />
+					<h:inputText id="itemEncontrado" value="#{estoqueBean.estoque.item.nome}" readonly="true" disabled="true" rendered="#{estoqueBean.estoque.id != null}"/>
+					
+					<h:outputLabel value="Quantidade:" for="quantidade" />
+					<h:inputText id="quantidade" value="#{estoqueBean.estoque.quantidade}" required="true"
+					             requiredMessage="Campo Quantidade deve ser preenchido."
+					             converterMessage="Campo Quantidade é Numérico.">
+						<f:convertNumber integerOnly="true" pattern="#######" maxFractionDigits="0" maxIntegerDigits="5"/>
+					</h:inputText>
+					<h:message for="quantidade" />
+				</h:panelGrid>
+			</fieldset>
+
+			<h:commandButton value="Gravar" action="#{estoqueBean.gravar()}" />
+			<h:commandButton value="Cadastro de Itens" action="item?faces-redirect=true" immediate="true" />
+			
+		</h:form>
+
+		<h:form id="formTabelaEstoque">
+			<br />
+			<fieldset>
+				<legend>Itens Estocados</legend>
+				<h:dataTable id="tabelaEstoque" value="#{estoqueBean.estoques}"
+					var="estoque">
+					<h:column>
+						<f:facet name="header">Item</f:facet>
+						<h:outputText value="#{estoque.item.nome}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">Valor</f:facet>
+						<h:outputText value="#{estoque.item.valor}">
+							<f:convertNumber currencySymbol="R$" type="currency" />
+						</h:outputText>
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">Quantidade</f:facet>
+						<h:outputText value="#{estoque.quantidade}" />
+					</h:column>
+
+					<h:column>
+						<f:facet name="header">Valor Total</f:facet>
+						<h:outputText value="#{estoqueBean.multiplicarValores(estoque)}" />
+					</h:column>
+
+
+					<h:column>
+						<f:facet name="header">Alterar</f:facet>
+						<h:commandLink value="altera" action="#{estoqueBean.carregar(estoque)}">
+							<f:setPropertyActionListener target="#{estoqueBean.estoque}" value="#{estoque}"/>
+						</h:commandLink>
+					</h:column>
+					
+					<h:column>
+						<f:facet name="header">Remover</f:facet>
+						<h:commandLink value="remove"
+							action="#{estoqueBean.remover(estoque)}">
+						</h:commandLink>
+					</h:column>
+				</h:dataTable>
+
+			</fieldset>
+
+		</h:form>
+
+
+	</ui:define>
+	<ui:define name="texto"/>
+</ui:composition>
+</html>
